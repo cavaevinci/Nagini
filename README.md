@@ -1,1 +1,3 @@
 # aggroDiscordBot
+
+Initial commit
