@@ -1,5 +1,8 @@
 from random import choice, randint
+from openai import OpenAI
 
+client = OpenAI(
+    api_key="xxxxxxxxxxx")
 
 def get_response(user_input: str) -> str:
     lowered: str = user_input.lower()
@@ -15,6 +18,13 @@ def get_response(user_input: str) -> str:
     elif 'roll dice' in lowered:
         return f'You rolled: {randint(1, 6)}'
     else:
-        return choice(['I do not understand...',
-                       'What are you talking about?',
-                       'Do you mind rephrasing that?'])
+        try:
+            response = client.completions.create(# Update the method name as per the new API
+            model="babbage-002",  # Choose a suitable ChatGPT model
+            prompt=f"User: {user_input}\nChatGPT:",
+            max_tokens=150,  # Adjust max response length as needed
+            temperature=0.7)
+            return response.choices[0].text.strip()  # Extract ChatGPT's response
+        except Exception as e:
+            print(f"Error using ChatGPT: {e}")
+            return "I'm having trouble accessing ChatGPT at the moment. Please try again later."
